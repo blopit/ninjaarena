@@ -4,6 +4,7 @@
 var
   localPlayer,  // Local player
   remotePlayers,
+  newPlayers,
   socket,
   cursors,
   game;
@@ -35,6 +36,7 @@ function init() {
 
   localPlayer = new Player(game, startX, startY);
   remotePlayers = [];
+  newPlayers = [];
 
   socket = io("http://localhost:8000");
 
@@ -72,8 +74,15 @@ function click(evt) {
 }
 
 function update() {
+  //for rendering new players
+  for (var i = 0; i < newPlayers.length; i++) {
+    newPlayer = newPlayers[i];
+    newPlayer.create();
+  }
+  newPlayers = [];
+
   if (localPlayer.update(cursors)) {
-    socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
+    socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot()});
   };
 }
 
@@ -99,7 +108,7 @@ function onResize(e) {
 
 function onSocketConnected() {
   console.log("Connected to socket server");
-  socket.emit("new player", {x: localPlayer.getX(), y: localPlayer.getY()});
+  socket.emit("new player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot()});
 };
 
 function onSocketDisconnect() {
@@ -111,7 +120,7 @@ function onNewPlayer(data) {
   console.log("New player connected: "+data.id);
   var newPlayer = new Player(game, data.x, data.y);
   newPlayer.id = data.id;
-  newPlayer.create();
+  newPlayers.push(newPlayer);
   remotePlayers.push(newPlayer);
 
 };
@@ -121,12 +130,13 @@ function onMovePlayer(data) {
 
   console.log("moving");
   if (!movePlayer) {
-      console.log("Player not found: "+data.id);
-      return;
+    console.log("Player not found: "+data.id);
+    return;
   };
 
   movePlayer.setX(data.x);
   movePlayer.setY(data.y);
+  movePlayer.setRot(data.rot);
 };
 
 function onRemovePlayer(data) {
