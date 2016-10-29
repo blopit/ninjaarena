@@ -49,7 +49,7 @@ function preload() {
 
 function create() {
   console.log('create');
-  game.physics.startSystem(Phaser.Physics.ARCADE);
+  //game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
   console.log(localPlayer);
   localPlayer.create();
@@ -63,11 +63,9 @@ function create() {
 }
 
 function update() {
-
   if (localPlayer.update(cursors)) {
     socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
   };
-
 }
 
 /**************************************************
@@ -87,6 +85,7 @@ var setEventHandlers = function() {
 
 // Browser window resize
 function onResize(e) {
+  console.log("reszize");
   // Maximise the canvas
   //canvas.width = window.innerWidth;
   //canvas.height = window.innerHeight;
@@ -114,6 +113,7 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
   var movePlayer = playerById(data.id);
 
+  console.log("moving");
   if (!movePlayer) {
       console.log("Player not found: "+data.id);
       return;

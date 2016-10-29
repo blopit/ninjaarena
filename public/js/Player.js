@@ -5,13 +5,13 @@ var Player = function(room, startX, startY) {
   var x = startX,
     y = startY,
     id,
-    moveAmount = 300,
+    moveAmount = 3,
     game = room,
     sprite;
 
   var create = function() {
     sprite = game.add.sprite(x, y, 'dude');
-    game.physics.arcade.enable(sprite);
+    //game.physics.arcade.enable(sprite);
   };
 
   var destroy = function() {
@@ -20,7 +20,7 @@ var Player = function(room, startX, startY) {
 
   var getX = function() {
     if (sprite) {
-      return sprite.position.x;
+      return sprite.x;
     } else {
       return x;
     }
@@ -28,7 +28,7 @@ var Player = function(room, startX, startY) {
 
   var getY = function() {
     if (sprite) {
-      return sprite.position.y;
+      return sprite.y;
     } else {
       return y;
     }
@@ -37,37 +37,39 @@ var Player = function(room, startX, startY) {
   var setX = function(newX) {
     x = newX;
     if (sprite) {
-      sprite.position.x = x;
+      sprite.x = newX;
     }
   };
 
   var setY = function(newY) {
     y = newY;
     if (sprite) {
-      sprite.position.y = y;
+      sprite.y = newY;
     }
   };
 
   var update = function(cursors) {
-
-    sprite.body.velocity.x = 0;
-    sprite.body.velocity.y = 0;
+    var keypress = false;
 
     // Up key takes priority over down
     if (cursors.up.isDown) {
-      sprite.body.velocity.y = -moveAmount;
+      sprite.y -= moveAmount;
+      keypress = true;
     } else if (cursors.down.isDown) {
-      sprite.body.velocity.y = moveAmount;
+      sprite.y += moveAmount;
+      keypress = true;
     };
 
     // Left key takes priority over right
     if (cursors.left.isDown) {
-      sprite.body.velocity.x = -moveAmount;
+      sprite.x -= moveAmount;
+      keypress = true;
     } else if (cursors.right.isDown) {
-      sprite.body.velocity.x = moveAmount;
+      sprite.x += moveAmount;
+      keypress = true;
     };
-    //return true;
-    return (sprite.body.velocity.x != 0 || sprite.body.velocity.y != 0) ? true : false;
+
+    return keypress;
   };
 
   return {
