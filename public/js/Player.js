@@ -7,15 +7,19 @@ var Player = function(room, startX, startY) {
     id,
     moveAmount = 3,
     game = room,
-    sprite;
+    sprite,
+    sword,
+    actionTime = 0;
 
   var create = function() {
     sprite = game.add.sprite(x, y, 'dude');
-    //game.physics.arcade.enable(sprite);
+    sword = game.add.sprite(x, y, 'sword');
+    sword.animations.add('swing', [0, 1, 2, 3, 4 ,5], 25, false);
   };
 
   var destroy = function() {
     sprite.kill();
+    sword.kill();
   }
 
   var getX = function() {
@@ -38,6 +42,7 @@ var Player = function(room, startX, startY) {
     x = newX;
     if (sprite) {
       sprite.x = newX;
+      sword.x = newX;
     }
   };
 
@@ -45,7 +50,12 @@ var Player = function(room, startX, startY) {
     y = newY;
     if (sprite) {
       sprite.y = newY;
+      sword.y = newY;
     }
+  };
+
+  var click = function(evt) {
+    sword.animations.play('swing');
   };
 
   var update = function(cursors) {
@@ -53,21 +63,24 @@ var Player = function(room, startX, startY) {
 
     // Up key takes priority over down
     if (cursors.up.isDown) {
-      sprite.y -= moveAmount;
+      y -= moveAmount;
       keypress = true;
     } else if (cursors.down.isDown) {
-      sprite.y += moveAmount;
+      y += moveAmount;
       keypress = true;
     };
 
     // Left key takes priority over right
     if (cursors.left.isDown) {
-      sprite.x -= moveAmount;
+      x -= moveAmount;
       keypress = true;
     } else if (cursors.right.isDown) {
-      sprite.x += moveAmount;
+      x += moveAmount;
       keypress = true;
     };
+
+    setX(x);
+    setY(y);
 
     return keypress;
   };
@@ -79,6 +92,7 @@ var Player = function(room, startX, startY) {
     setY: setY,
     update: update,
     create: create,
-    destroy: destroy
+    destroy: destroy,
+    click: click
   }
 };

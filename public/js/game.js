@@ -45,21 +45,30 @@ function init() {
 
 function preload() {
   game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
+  game.load.spritesheet('sword', 'assets/images/axe_anim.png', 101, 108);
 }
 
 function create() {
   console.log('create');
-  //game.physics.startSystem(Phaser.Physics.ARCADE);
-  cursors = game.input.keyboard.createCursorKeys();
+  cursors = {
+    'up': game.input.keyboard.addKey(Phaser.Keyboard.W),
+    'down': game.input.keyboard.addKey(Phaser.Keyboard.S),
+    'left': game.input.keyboard.addKey(Phaser.Keyboard.A),
+    'right': game.input.keyboard.addKey(Phaser.Keyboard.D)
+  };
+  game.input.mouse.capture = true;
   console.log(localPlayer);
   localPlayer.create();
 
-  //  Our two animations, walking left and right.
-  //player.animations.add('left', [0, 1, 2, 3], 10, true);
-  //player.animations.add('right', [5, 6, 7, 8], 10, true);
+  game.input.mouse.mouseDownCallback = click;
 
+}
 
-
+function click(evt) {
+  if (game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
+      console.log("lmb");
+      localPlayer.click(evt);
+  }
 }
 
 function update() {
@@ -86,9 +95,6 @@ var setEventHandlers = function() {
 // Browser window resize
 function onResize(e) {
   console.log("reszize");
-  // Maximise the canvas
-  //canvas.width = window.innerWidth;
-  //canvas.height = window.innerHeight;
 };
 
 function onSocketConnected() {
