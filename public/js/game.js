@@ -62,14 +62,14 @@ function create() {
   console.log(localPlayer);
   localPlayer.create();
 
-  game.input.mouse.mouseDownCallback = click;
+  game.input.mouse.mouseDownCallback = clickDown;
 
 }
 
-function click(evt) {
+function clickDown(evt) {
   if (game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
       console.log("lmb");
-      localPlayer.click(evt);
+      localPlayer.LMBclickDown(evt);
   }
 }
 

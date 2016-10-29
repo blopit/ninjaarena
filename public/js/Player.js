@@ -6,11 +6,12 @@ var Player = function(room, startX, startY) {
     y = startY,
     swordRot = 0,
     id,
-    moveAmount = 3,
+    moveAmount = 5,
     game = room,
     sprite,
     sword,
-    actionTimer = 0.5; //seconds
+    swingTimer = 0.5, //seconds
+    canMove = true,
     action = true;
 
     var swordOffsetX = 16,
@@ -80,6 +81,10 @@ var Player = function(room, startX, startY) {
 
   var resetActionTimer = function(evt) {
     action = true;
+  }
+
+  var resetMoveTimer = function(evt) {
+    canMove = true;
     sword.frame = 0;
   }
 
@@ -87,13 +92,22 @@ var Player = function(room, startX, startY) {
     sword.animations.play('swing');
   }
 
-  var click = function(evt) {
+  var stopAction = function(seconds) {
+    action = false;
+    game.time.events.add(Phaser.Timer.SECOND * seconds, resetActionTimer, this);
+  }
+
+  var stopMove = function(seconds) {
+    canMove = false;
+    game.time.events.add(Phaser.Timer.SECOND * seconds, resetMoveTimer, this);
+  }
+
+  var LMBclickDown = function(evt) {
     if (action) {
       swing();
-      action = false;
-      game.time.events.add(Phaser.Timer.SECOND * actionTimer, resetActionTimer, this);
+      stopAction(swingTimer);
+      stopMove(0.3);
     }
-
   };
 
   var update = function(cursors) {
@@ -104,29 +118,31 @@ var Player = function(room, startX, startY) {
 
     swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
 
-    // Up key takes priority over down
-    if (cursors.up.isDown) {
-      y -= moveAmount;
-      keypress = true;
-    } else if (cursors.down.isDown) {
-      y += moveAmount;
-      keypress = true;
-    };
+    if (canMove) {
+      // Up key takes priority over down
+      if (cursors.up.isDown) {
+        y -= moveAmount;
+        keypress = true;
+      } else if (cursors.down.isDown) {
+        y += moveAmount;
+        keypress = true;
+      };
 
-    // Left key takes priority over right
-    if (cursors.left.isDown) {
-      x -= moveAmount;
-      keypress = true;
-    } else if (cursors.right.isDown) {
-      x += moveAmount;
-      keypress = true;
-    };
+      // Left key takes priority over right
+      if (cursors.left.isDown) {
+        x -= moveAmount;
+        keypress = true;
+      } else if (cursors.right.isDown) {
+        x += moveAmount;
+        keypress = true;
+      };
+    }
 
     setX(x);
     setY(y);
     setRot(swordRot);
 
-    return true;//keypress || (deltaRot != sword.rotation);
+    return keypress || (deltaRot != sword.rotation);
   };
 
   return {
@@ -139,6 +155,6 @@ var Player = function(room, startX, startY) {
     update: update,
     create: create,
     destroy: destroy,
-    click: click
+    LMBclickDown: LMBclickDown
   }
 };
