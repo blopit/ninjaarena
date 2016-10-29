@@ -26,10 +26,22 @@ function onSocketConnection(client) {
   client.on("remove player", onRemovePlayer);
 };
 
-function onClientDisconnect(data) {
-    console.log(this);
-    util.log("Player has disconnected: "+data.id);
-    onRemovePlayer(data)
+function onClientDisconnect() {
+  util.log("Player has disconnected: "+this.id);
+
+  var removePlayer = playerById(this.id);
+
+  // Player not found
+  if (!removePlayer) {
+    util.log("Player not found: "+this.id);
+    return;
+  };
+
+  // Remove player from players array
+  players.splice(players.indexOf(removePlayer), 1);
+
+  // Broadcast removed player to connected socket clients
+  this.broadcast.emit("remove player", {id: this.id});
 };
 
 function onNewPlayer(data) {

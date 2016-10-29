@@ -110,15 +110,16 @@ function onMovePlayer(data) {
 };
 
 function onRemovePlayer(data) {
-	var removePlayer = playerById(this.id);
+  var removePlayer = playerById(data.id);
 
+  // Player not found
   if (!removePlayer) {
-      util.log("Player not found: "+this.id);
-      return;
+    console.log("Player not found: "+data.id);
+    return;
   };
 
-  players.splice(players.indexOf(removePlayer), 1);
-  socket.emit("remove player", {id: this.id});
+  // Remove player from array
+  remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
 function playerById(id) {
