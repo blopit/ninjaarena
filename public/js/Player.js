@@ -7,6 +7,7 @@ var Player = function(room, startX, startY) {
 
     hsp = 0,
     vsp = 0,
+    mvang = 0,
     groudFric = 1,
     weight = 1,
     moveAmount = 6,
@@ -125,13 +126,10 @@ var Player = function(room, startX, startY) {
   }
 
   var update = function(cursors, gfx) {
-    var keypress = false;
     mx = game.input.mousePointer.x;
     my = game.input.mousePointer.y;
     deltaRot =  swordRot;
-
     swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
-
 
     if (game.input.activePointer.leftButton.isDown) {
       LMBclickDown(this);
@@ -140,29 +138,24 @@ var Player = function(room, startX, startY) {
     var vecX = 0; //key vector
     var vecY = 0;
     if (canMove) {
-      // Up key takes priority over down
+
       if (cursors.up.isDown) {
         vecY -= 1;
-        keypress = true;
-      } else if (cursors.down.isDown) {
+      }
+      if (cursors.down.isDown) {
         vecY += 1;
-        keypress = true;
       };
-
-      // Left key takes priority over right
       if (cursors.left.isDown) {
         vecX -= 1;
-        keypress = true;
-      } else if (cursors.right.isDown) {
+      }
+      if (cursors.right.isDown) {
         vecX += 1;
-        keypress = true;
       };
     }
 
     /*******************************/
     // smooth physics math dw bout it ;)
     var keyang = Math.atan2(vecY, vecX);
-    var mvang = 0;
 
     if (vecX != 0 || vecY != 0) {
       hsp += Math.cos(keyang) * 2 * groudFric;
@@ -179,14 +172,15 @@ var Player = function(room, startX, startY) {
 
     var d2 = Math.sqrt(vsp*vsp + hsp*hsp);
 
-    if (d2 - groudFric * Math.sign(d2) > 0) {
-      d2 -= groudFric * Math.sign(d2);
+    if (d2 > groudFric) {
+      d2 -= groudFric;
     } else {
-      d2 = 0
+      d2 = 0;
     }
 
     hsp = Math.cos(mvang) * d2;
     vsp = Math.sin(mvang) * d2;
+    mvang = Math.atan2(vsp, hsp);
     /*******************************/
 
 
