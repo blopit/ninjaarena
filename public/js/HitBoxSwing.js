@@ -5,10 +5,11 @@ var V = SAT.Vector;
 var P = SAT.Polygon;
 var HitBoxSwing = function(c, room, startX, startY, rot) {
 
-  var r1 = rot + (Math.PI/2);
+  var r1 = rot + (Math.PI/2) * 0.8;
   var r3 = rot;
+
   var r2 = (r1 + r3) / 2;
-  var d = 70;
+  var d = 180;
 
   var x = startX,
     y = startY,
@@ -20,7 +21,7 @@ var HitBoxSwing = function(c, room, startX, startY, rot) {
     ]),
     rot = rot,
     game = room,
-    life = 15,
+    life = 5,
     player = c;
 
   var create = function() {
@@ -72,10 +73,10 @@ var HitBoxSwing = function(c, room, startX, startY, rot) {
     setY(y);
     setRot(rot);
 
-    gfx.lineStyle(4, 0xFF0000);
-    gfx.arc(x, y, 70,
-      rot+(Math.PI/2),
-      rot, true);
+    gfx.lineStyle(1, 0xFF0000);
+    gfx.arc(x, y, d,
+    r1,
+    r3, true);
     gfx.lineStyle(0);
 
     life--;

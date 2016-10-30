@@ -39,7 +39,17 @@ function initGame() {
   console.log("init");
 
   // Initialise the local player
-  game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
+  //game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'game', );
+
+  var config = {
+    forceSetTimeOut: true,
+    renderer: Phaser.CANVAS,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    parent: 'game',
+    state: { preload: preload, create: create, update: update }
+  };
+  game = new Phaser.Game(config);
 
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
@@ -56,12 +66,15 @@ function initGame() {
 };
 
 function preload() {
+  game.stage.disableVisibilityChange = true;
   game.load.image('background', 'assets/images/houseBackground.png');
   game.load.spritesheet('dude', 'assets/images/dude_ninja.png', 75, 75);
   game.load.spritesheet('sword', 'assets/images/sword_anim.png', 256, 256);
 }
 
 function create() {
+
+
   var background = game.add.sprite(0, 0, 'background');
   background.width = worldWidth;
   background.height = worldHeight;
@@ -87,8 +100,9 @@ function create() {
       localPlayer.LMBclickDown(evt);
   }
 }*/
-
+var G = 0;
 function update() {
+  console.log(G++);
   graphics.clear();
 
   for (var i = 0; i < hitboxes.length; i++) {

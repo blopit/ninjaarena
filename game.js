@@ -9,7 +9,7 @@ var socket,
 
 function init() {
   players = [];
-  socket = io.listen(8000);
+  socket = io.listen(8880);
   setEventHandlers();
 
 };

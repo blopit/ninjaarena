@@ -32,8 +32,8 @@ var Player = function(c, room, startX, startY, playerName) {
     lives = 2,
     app = c;
 
-  var swordOffsetX = 20,
-  swordOffsetY = 40,
+  var swordOffsetX = 0,
+  swordOffsetY = 0,
   swordRotOffset = -70;
 
   var hitboxes = [];
@@ -43,8 +43,8 @@ var Player = function(c, room, startX, startY, playerName) {
     sprite.anchor.setTo(0.5);
     sword = game.add.sprite(x, y, 'sword');
     sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50);
-    sword.anchor.x = 28/101;
-    sword.anchor.y = 28/108;
+    sword.anchor.x = 20/101;
+    sword.anchor.y = -10/108;
     sword.scale.setTo(0.7);
 
     var style = {
@@ -161,7 +161,7 @@ var Player = function(c, room, startX, startY, playerName) {
   var LMBclickDown = function(player, addHBox) {
     if (action) {
       swing();
-      addHBox(player, sword.x, sword.y, swordRot);
+      addHBox(player, sword.x, sword.y, swordRot + 0.5);
       stopAction(swingTimer);
       stopMove(0.3);
     }
@@ -176,7 +176,6 @@ var Player = function(c, room, startX, startY, playerName) {
     mx = game.input.mousePointer.x;
     my = game.input.mousePointer.y;
     deltaRot =  swordRot;
-    swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
 
     if (game.input.activePointer.leftButton.isDown) {
       LMBclickDown(this, addHBox);
@@ -185,6 +184,7 @@ var Player = function(c, room, startX, startY, playerName) {
     var vecX = 0; //key vector
     var vecY = 0;
     if (canMove) {
+      swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
 
       if (cursors.up.isDown) {
         vecY -= 1;
