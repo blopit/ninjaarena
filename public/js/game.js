@@ -37,8 +37,7 @@ function initGame() {
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
 
-  localPlayer = new Player(game, startX, startY);
-  localPlayer.name = name;
+  localPlayer = new Player(game, startX, startY, name);
   remotePlayers = [];
   newPlayers = [];
 

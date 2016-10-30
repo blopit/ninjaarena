@@ -1,7 +1,7 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(room, startX, startY) {
+var Player = function(room, startX, startY, playerName) {
   var x = startX,
     y = startY,
 
@@ -20,7 +20,8 @@ var Player = function(room, startX, startY) {
     swingTimer = 0.5, //seconds
     canMove = true,
     action = true,
-    lives = 2;
+    lives = 2,
+    name = playerName;
 
     var swordOffsetX = 16,
     swordOffsetY = 32,
@@ -34,10 +35,16 @@ var Player = function(room, startX, startY) {
 
   var create = function() {
     sprite = game.add.sprite(x, y, 'dude');
+    sprite.anchor.setTo(0.5);
     sword = game.add.sprite(x, y, 'sword');
     sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50, false);
     sword.anchor.x = 28/101;
     sword.anchor.y = 28/108;
+
+    var style = { font: '16px Arial', fill: '#ffffff', align: 'center' };
+    var text = game.make.text(0, -30, name, style);
+    text.anchor.set(0.5);
+    sprite.addChild(text);
   };
 
   var destroy = function() {
