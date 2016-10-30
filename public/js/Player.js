@@ -4,15 +4,22 @@
 var Player = function(room, startX, startY) {
   var x = startX,
     y = startY,
+
+    hsp = 0,
+    vsp = 0,
+    groudFric = 1,
+    weight = 1,
+    moveAmount = 6,
+
     swordRot = 0,
     id,
-    moveAmount = 5,
     game = room,
     sprite,
     sword,
     swingTimer = 0.5, //seconds
     canMove = true,
-    action = true;
+    action = true,
+    lives = 2;
 
     var swordOffsetX = 20,
     swordOffsetY = 40,
@@ -126,39 +133,72 @@ var Player = function(room, startX, startY) {
     swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
 
 
-    if (game.input.activePointer.isDown) {
+    if (game.input.activePointer.leftButton.isDown) {
       LMBclickDown(this);
     }
 
+    var vecX = 0; //key vector
+    var vecY = 0;
     if (canMove) {
       // Up key takes priority over down
       if (cursors.up.isDown) {
-        y -= moveAmount;
+        vecY -= 1;
         keypress = true;
       } else if (cursors.down.isDown) {
-        y += moveAmount;
+        vecY += 1;
         keypress = true;
       };
 
       // Left key takes priority over right
       if (cursors.left.isDown) {
-        x -= moveAmount;
+        vecX -= 1;
         keypress = true;
       } else if (cursors.right.isDown) {
-        x += moveAmount;
+        vecX += 1;
         keypress = true;
       };
     }
 
-    setX(x);
-    setY(y);
+    /*******************************/
+    // smooth physics math dw bout it ;)
+    var keyang = Math.atan2(vecY, vecX);
+    var mvang = 0;
+
+    if (vecX != 0 || vecY != 0) {
+      hsp += Math.cos(keyang) * 2 * groudFric;
+      vsp += Math.sin(keyang) * 2 * groudFric;
+      mvang = Math.atan2(vsp, hsp);
+    }
+
+    var d = Math.sqrt(vsp*vsp + hsp*hsp);
+    if (d > moveAmount) {
+      d = moveAmount;
+    }
+    hsp = Math.cos(mvang) * d;
+    vsp = Math.sin(mvang) * d;
+
+    var d2 = Math.sqrt(vsp*vsp + hsp*hsp);
+
+    if (d2 - groudFric * Math.sign(d2) > 0) {
+      d2 -= groudFric * Math.sign(d2);
+    } else {
+      d2 = 0
+    }
+
+    hsp = Math.cos(mvang) * d2;
+    vsp = Math.sin(mvang) * d2;
+    /*******************************/
+
+
+    setX(x+hsp);
+    setY(y+vsp);
     setRot(swordRot);
 
     for (var i = 0; i < hitboxes.length; i++) {
       hitboxes[i].update(gfx);
     }
 
-    return keypress || (deltaRot != sword.rotation);
+    return true;//keypress || (deltaRot != sword.rotation);
   };
 
   return {
