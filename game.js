@@ -24,7 +24,15 @@ function onSocketConnection(client) {
   client.on("new player", onNewPlayer);
   client.on("move player", onMovePlayer);
   client.on("remove player", onRemovePlayer);
+  client.on("hitbox create", onHitboxCreate);
 };
+
+function onHitboxCreate(data) {
+  console.log("hitme: " + data.x);
+  this.broadcast.emit("hitbox create", {
+    id:this.id,
+    x:data.x, y:data.y, rot:data.rot });
+}
 
 function onClientDisconnect() {
   util.log("Player has disconnected: " + this.id);

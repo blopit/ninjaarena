@@ -6,20 +6,24 @@ var P = SAT.Polygon;
 var HitBoxSwing = function(c, room, startX, startY, rot) {
 
   var r1 = rot + (Math.PI/2);
-  var r2 = rot;
-  var d = 50;
+  var r3 = rot;
+  var r2 = (r1 + r3) / 2;
+  var d = 70;
 
   var x = startX,
     y = startY,
     bounds = new P(new V(startX, startY), [
       new V(0,0),
-      new V(Math.cos(r1)*d, Math.sin(r1)*d),
-      new V(Math.cos(r2)*d, Math.sin(r2)*d)
+      new V(Math.cos(r3)*d, Math.sin(r3)*d),
+      new V(Math.cos(r2)*d, Math.sin(r2)*d),
+      new V(Math.cos(r1)*d, Math.sin(r1)*d)
     ]),
     rot = rot,
     game = room,
-    life = 5,
+    life = 15,
     player = c;
+
+    console.log(bounds);
 
   var create = function() {
 

@@ -3,20 +3,23 @@
 **************************************************/
 var V = SAT.Vector;
 var C = SAT.Circle;
-var Player = function(c, room, startX, startY, playerName, idx) {
+var Player = function(c, room, startX, startY, playerName) {
   var x = startX,
     y = startY,
-    bounds = new C(new V(startX, startY), 16),
+    bounds = new C(new V(startX, startY), 32),
 
     hsp = 0,
     vsp = 0,
     mvang = 0,
-    groudFric = 1,
+    groudFric = 0.8,
     weight = 1,
     moveAmount = 6,
 
+    forceX = 0,
+    forceY = 0,
+
     swordRot = 0,
-    id = idx || '',
+    id,
     game = room,
     sprite,
     sword,
@@ -29,8 +32,8 @@ var Player = function(c, room, startX, startY, playerName, idx) {
     lives = 2,
     app = c;
 
-  var swordOffsetX = 16,
-  swordOffsetY = 32,
+  var swordOffsetX = 20,
+  swordOffsetY = 40,
   swordRotOffset = -70;
 
   var hitboxes = [];
@@ -40,8 +43,8 @@ var Player = function(c, room, startX, startY, playerName, idx) {
     sprite.anchor.setTo(0.5);
     sword = game.add.sprite(x, y, 'sword');
     sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50, false);
-    sword.anchor.x = 0/101;
-    sword.anchor.y = 40/108;
+    sword.anchor.x = 28/101;
+    sword.anchor.y = 28/108;
 
     var style = {
       font: '16px Arial',
@@ -62,6 +65,7 @@ var Player = function(c, room, startX, startY, playerName, idx) {
   };
 
   var getBounds = function() {
+    bounds.pos = new V(x, y);
     return bounds;
   };
 
@@ -91,6 +95,14 @@ var Player = function(c, room, startX, startY, playerName, idx) {
 
   var getSprite = function() {
     return sprite;
+  };
+
+  var getId = function() {
+    return id;
+  };
+
+  var setId = function(newId) {
+    id = newId;
   };
 
   var setRot = function(newRot) {
@@ -154,6 +166,11 @@ var Player = function(c, room, startX, startY, playerName, idx) {
     }
   };
 
+  var meleeHit = function(dir, am) {
+    forceX += Math.cos(dir) * am;
+    forceY += Math.sin(dir) * am;
+  }
+
   var update = function(cursors, gfx, addHBox) {
     mx = game.input.mousePointer.x;
     my = game.input.mousePointer.y;
@@ -212,11 +229,15 @@ var Player = function(c, room, startX, startY, playerName, idx) {
     mvang = Math.atan2(vsp, hsp);
     /*******************************/
 
+    hsp+= forceX;
+    vsp+= forceY;
 
     setX(x+hsp);
     setY(y+vsp);
     setRot(swordRot);
 
+    forceX = 0;
+    forceY = 0;
     return true;//keypress || (deltaRot != sword.rotation);
   };
 
@@ -232,7 +253,9 @@ var Player = function(c, room, startX, startY, playerName, idx) {
     create: create,
     destroy: destroy,
     name: name,
+    getId: getId,
     getBounds: getBounds,
+    meleeHit: meleeHit,
     LMBclickDown: LMBclickDown
   }
 };

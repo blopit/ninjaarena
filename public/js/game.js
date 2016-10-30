@@ -102,10 +102,11 @@ function update() {
     var polygon = hitboxes[i].getBounds();
 
     var response = new SAT.Response();
-    var collided = SAT.testPolygonCircle(polygon, circle, response);
+    var collided = SAT.testCirclePolygon(circle, polygon, response);
 
     if (collided) {
-
+      console.log("YEAAA");
+      localPlayer.meleeHit(hitboxes[i].getRot()+(Math.PI/4), 20);
     }
 
   }
@@ -129,11 +130,13 @@ function update() {
 }
 
 var onAddHBox = function(player, x, y, rot) {
-  hitboxes.push(new HitBoxSwing(player, game, x, y, rot));
-}
 
-var onRemoveHBox = function(hbox) {
-  //hitboxes.splice(hitboxes.indexOf(hbox), 1);
+  hitboxes.push(new HitBoxSwing(player, game, x, y, rot));
+  socket.emit("hitbox create", {
+    x:x,
+    y:y,
+    rot:rot
+  });
 }
 
 /**************************************************
@@ -149,6 +152,7 @@ var setEventHandlers = function() {
   socket.on("new player", onNewPlayer);
   socket.on("move player", onMovePlayer);
   socket.on("remove player", onRemovePlayer);
+  socket.on("hitbox create", onHitboxCreate);
 };
 
 // Browser window resize
@@ -158,6 +162,12 @@ function onResize(e) {
   game.height = window.innerHeight;
   game.renderer.resize(game.width, game.height);
   game.camera.setSize(game.width, game.height);
+};
+
+function onHitboxCreate(data) {
+  var pl = playerById(data.id);
+  if (pl)
+    hitboxes.push(new HitBoxSwing(pl, game, data.x, data.y, data.rot));
 };
 
 function onSocketConnected() {
@@ -182,7 +192,6 @@ function onNewPlayer(data) {
 function onMovePlayer(data) {
   var movePlayer = playerById(data.id);
 
-  console.log("moving");
   if (!movePlayer) {
     console.log("Player not found: "+data.id);
     return;
