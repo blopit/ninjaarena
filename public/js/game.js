@@ -47,7 +47,7 @@ function init() {
 
 function preload() {
   game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
-  game.load.spritesheet('sword', 'assets/images/axe_anim.png', 101, 108);
+  game.load.spritesheet('sword', 'assets/images/sword_anim.png', 101, 108);
 }
 
 function create() {
