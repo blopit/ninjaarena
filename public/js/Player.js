@@ -21,9 +21,9 @@ var Player = function(room, startX, startY) {
     action = true,
     lives = 2;
 
-    var swordOffsetX = 20,
-    swordOffsetY = 40,
-    swordRotOffset = -60;
+    var swordOffsetX = 16,
+    swordOffsetY = 32,
+    swordRotOffset = -70;
 
     var hitboxes = [];
 

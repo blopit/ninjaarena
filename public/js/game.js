@@ -34,13 +34,14 @@ function init() {
 
 
 function preload() {
+  game.load.image("background", 'assets/images/houseBackground.png');
   game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
   game.load.spritesheet('sword', 'assets/images/sword_anim.png', 101, 108);
 }
 
 function create() {
   console.log('create');
-
+  game.add.tileSprite(0, 0, 800, 600, 'background');
   cursors = {
     'up': game.input.keyboard.addKey(Phaser.Keyboard.W),
     'left': game.input.keyboard.addKey(Phaser.Keyboard.A),
