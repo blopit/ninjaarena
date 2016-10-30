@@ -42,9 +42,10 @@ var Player = function(c, room, startX, startY, playerName) {
     sprite = game.add.sprite(x, y, 'dude');
     sprite.anchor.setTo(0.5);
     sword = game.add.sprite(x, y, 'sword');
-    sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50, false);
+    sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50);
     sword.anchor.x = 28/101;
     sword.anchor.y = 28/108;
+    sword.scale.setTo(0.7);
 
     var style = {
       font: '16px Arial',
@@ -54,7 +55,7 @@ var Player = function(c, room, startX, startY, playerName) {
       strokeThickness: 4,
       fill: '#ffffff'
     };
-    var text = game.make.text(0, -30, name, style);
+    var text = game.make.text(0, -50, name, style);
     text.anchor.set(0.5);
     sprite.addChild(text);
   };
