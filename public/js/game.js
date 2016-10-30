@@ -9,6 +9,7 @@ var
   cursors,
   graphics,
   game,
+  hitboxes,
   name = 'Player',
   worldWidth = 800 * 3,
   worldHeight = 505 * 3;
@@ -34,6 +35,7 @@ function init(debug) {
 }
 
 function initGame() {
+
   console.log("init");
 
   // Initialise the local player
@@ -42,9 +44,10 @@ function initGame() {
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
 
-  localPlayer = new Player(game, startX, startY, name);
+  localPlayer = new Player(this, game, startX, startY, name);
   remotePlayers = [];
   newPlayers = [];
+  hitboxes = [];
 
   socket = io("http://localhost:8000");
 
@@ -89,6 +92,29 @@ function create() {
 function update() {
   graphics.clear();
 
+  for (var i = 0; i < hitboxes.length; i++) {
+    hitboxes[i].update(graphics);
+
+    if (hitboxes[i].getPlayer() == localPlayer)
+      continue;
+
+    var circle = localPlayer.getBounds();
+    var polygon = hitboxes[i].getBounds();
+
+    var response = new SAT.Response();
+    var collided = SAT.testPolygonCircle(polygon, circle, response);
+
+    if (collided) {
+
+    }
+
+  }
+  for (var i = hitboxes.length - 1; i >= 0; i--) {
+    if (hitboxes[i].getLife() <= 0) {
+      hitboxes.splice(i, 1);
+    }
+  }
+
   //for rendering new players
   for (var i = 0; i < newPlayers.length; i++) {
     newPlayer = newPlayers[i];
@@ -97,9 +123,17 @@ function update() {
   newPlayers = [];
 
 
-  if (localPlayer.update(cursors, graphics)) {
+  if (localPlayer.update(cursors, graphics, onAddHBox)) {
     socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot()});
   };
+}
+
+var onAddHBox = function(player, x, y, rot) {
+  hitboxes.push(new HitBoxSwing(player, game, x, y, rot));
+}
+
+var onRemoveHBox = function(hbox) {
+  //hitboxes.splice(hitboxes.indexOf(hbox), 1);
 }
 
 /**************************************************
@@ -138,7 +172,7 @@ function onSocketDisconnect() {
 
 function onNewPlayer(data) {
   console.log("New player connected: "+data.id);
-  var newPlayer = new Player(game, data.x, data.y, data.name);
+  var newPlayer = new Player(this, game, data.x, data.y, data.name);
   newPlayer.id = data.id;
   newPlayers.push(newPlayer);
   remotePlayers.push(newPlayer);
@@ -172,6 +206,7 @@ function onRemovePlayer(data) {
   removePlayer.destroy();
   remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
+
 
 function playerById(id) {
   var i;

@@ -1,9 +1,12 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(room, startX, startY, playerName) {
+var V = SAT.Vector;
+var C = SAT.Circle;
+var Player = function(c, room, startX, startY, playerName, idx) {
   var x = startX,
     y = startY,
+    bounds = new C(new V(startX, startY), 16),
 
     hsp = 0,
     vsp = 0,
@@ -13,7 +16,7 @@ var Player = function(room, startX, startY, playerName) {
     moveAmount = 6,
 
     swordRot = 0,
-    id,
+    id = idx || '',
     game = room,
     sprite,
     sword,
@@ -21,15 +24,14 @@ var Player = function(room, startX, startY, playerName) {
     canMove = true,
     action = true,
     lives = 2,
-    name = playerName;
+    name = playerName,
+    invincible = false,
+    lives = 2,
+    app = c;
 
-    var swordOffsetX = 16,
-    swordOffsetY = 32,
-    swordRotOffset = -70;
-
-  var swordOffsetX = 20,
-  swordOffsetY = 40,
-  swordRotOffset = -60;
+  var swordOffsetX = 16,
+  swordOffsetY = 32,
+  swordRotOffset = -70;
 
   var hitboxes = [];
 
@@ -38,8 +40,8 @@ var Player = function(room, startX, startY, playerName) {
     sprite.anchor.setTo(0.5);
     sword = game.add.sprite(x, y, 'sword');
     sword.animations.add('swing', [0, 1, 2, 3, 4, 5], 50, false);
-    sword.anchor.x = 28/101;
-    sword.anchor.y = 28/108;
+    sword.anchor.x = 0/101;
+    sword.anchor.y = 40/108;
 
     var style = {
       font: '16px Arial',
@@ -57,6 +59,10 @@ var Player = function(room, startX, startY, playerName) {
   var destroy = function() {
     sprite.kill();
     sword.kill();
+  };
+
+  var getBounds = function() {
+    return bounds;
   };
 
   var getRot = function() {
@@ -99,6 +105,7 @@ var Player = function(room, startX, startY, playerName) {
     if (sprite) {
       sprite.x = newX;
       sword.x = newX + swordOffsetX;
+      bounds.pos = new V(x, y);
     }
   };
 
@@ -107,6 +114,7 @@ var Player = function(room, startX, startY, playerName) {
     if (sprite) {
       sprite.y = newY;
       sword.y = newY + swordOffsetY;
+      bounds.pos = new V(x, y);
     }
   };
 
@@ -123,6 +131,10 @@ var Player = function(room, startX, startY, playerName) {
     sword.animations.play('swing');
   };
 
+  var getBounds = function() {
+    return bounds;
+  };
+
   var stopAction = function(seconds) {
     action = false;
     game.time.events.add(Phaser.Timer.SECOND * seconds, resetActionTimer, this);
@@ -133,27 +145,23 @@ var Player = function(room, startX, startY, playerName) {
     game.time.events.add(Phaser.Timer.SECOND * seconds, resetMoveTimer, this);
   };
 
-  var LMBclickDown = function(player) {
+  var LMBclickDown = function(player, addHBox) {
     if (action) {
       swing();
-      hitboxes.push(new HitBoxSwing(player, game, sword.x, sword.y, swordRot));
+      addHBox(player, sword.x, sword.y, swordRot);
       stopAction(swingTimer);
       stopMove(0.3);
     }
   };
 
-  var removeHBox = function(hbox) {
-    hitboxes.splice(hitboxes.indexOf(hbox), 1);
-  }
-
-  var update = function(cursors, gfx) {
+  var update = function(cursors, gfx, addHBox) {
     mx = game.input.mousePointer.x;
     my = game.input.mousePointer.y;
     deltaRot =  swordRot;
     swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
 
     if (game.input.activePointer.leftButton.isDown) {
-      LMBclickDown(this);
+      LMBclickDown(this, addHBox);
     }
 
     var vecX = 0; //key vector
@@ -209,10 +217,6 @@ var Player = function(room, startX, startY, playerName) {
     setY(y+vsp);
     setRot(swordRot);
 
-    for (var i = 0; i < hitboxes.length; i++) {
-      hitboxes[i].update(gfx);
-    }
-
     return true;//keypress || (deltaRot != sword.rotation);
   };
 
@@ -227,8 +231,8 @@ var Player = function(room, startX, startY, playerName) {
     update: update,
     create: create,
     destroy: destroy,
-    LMBclickDown: LMBclickDown,
-    removeHBox: removeHBox,
-    name: name
+    name: name,
+    getBounds: getBounds,
+    LMBclickDown: LMBclickDown
   }
 };
