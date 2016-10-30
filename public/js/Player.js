@@ -83,6 +83,10 @@ var Player = function(room, startX, startY, playerName) {
     }
   };
 
+  var getSprite = function() {
+    return sprite;
+  };
+
   var setRot = function(newRot) {
     swordRot = newRot;
     if (sword) {
@@ -216,6 +220,7 @@ var Player = function(room, startX, startY, playerName) {
     getX: getX,
     getY: getY,
     getRot: getRot,
+    getSprite: getSprite,
     setX: setX,
     setY: setY,
     setRot, setRot,

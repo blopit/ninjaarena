@@ -9,7 +9,9 @@ var
   cursors,
   graphics,
   game,
-  name = 'Player';
+  name = 'Player',
+  worldWidth = 800 * 3,
+  worldHeight = 505 * 3;
 
 /**************************************************
 ** GAME INITIALISATION
@@ -35,7 +37,7 @@ function initGame() {
   console.log("init");
 
   // Initialise the local player
-  game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
+  game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
 
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
@@ -51,14 +53,17 @@ function initGame() {
 };
 
 function preload() {
-  game.load.image("background", 'assets/images/houseBackground.png');
+  game.load.image('background', 'assets/images/houseBackground.png');
   game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
   game.load.spritesheet('sword', 'assets/images/sword_anim.png', 101, 108);
 }
 
 function create() {
   console.log('create');
-  game.add.tileSprite(0, 0, 800, 600, 'background');
+  var background = game.add.sprite(0, 0, 'background');
+  background.width = worldWidth;
+  background.height = worldHeight;
+
   cursors = {
     'up': game.input.keyboard.addKey(Phaser.Keyboard.W),
     'left': game.input.keyboard.addKey(Phaser.Keyboard.A),
@@ -68,8 +73,10 @@ function create() {
   graphics = game.add.graphics(0, 0);
   game.input.mouse.capture = true;
 
-  localPlayer.create();
+  game.world.setBounds(0, 0, worldWidth, worldHeight);
 
+  localPlayer.create();
+  game.camera.follow(localPlayer.getSprite(), Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 }
 
 /*function clickDown(evt) {
@@ -112,7 +119,11 @@ var setEventHandlers = function() {
 
 // Browser window resize
 function onResize(e) {
-  console.log("reszize");
+  console.log("resize");
+  game.width = window.innerWidth;
+  game.height = window.innerHeight;
+  game.renderer.resize(game.width, game.height);
+  game.camera.setSize(game.width, game.height);
 };
 
 function onSocketConnected() {
