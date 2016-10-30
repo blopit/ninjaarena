@@ -100,9 +100,8 @@ function create() {
       localPlayer.LMBclickDown(evt);
   }
 }*/
-var G = 0;
+
 function update() {
-  console.log(G++);
   graphics.clear();
 
   for (var i = 0; i < hitboxes.length; i++) {
