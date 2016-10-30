@@ -9,12 +9,15 @@ var
   cursors,
   graphics,
   game,
-  name;
+  name = 'Player';
 
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
-function init() {
+function init(debug) {
+  if (debug)
+    return initGame();
+
   var nameForm = document.getElementById('nameForm');
   nameForm.addEventListener('submit', function(e) {
     e.preventDefault();

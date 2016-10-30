@@ -41,7 +41,14 @@ var Player = function(room, startX, startY, playerName) {
     sword.anchor.x = 28/101;
     sword.anchor.y = 28/108;
 
-    var style = { font: '16px Arial', fill: '#ffffff', align: 'center' };
+    var style = {
+      font: '16px Arial',
+      fill: '#000000',
+      align: 'center',
+      stroke: '#000000',
+      strokeThickness: 4,
+      fill: '#ffffff'
+    };
     var text = game.make.text(0, -30, name, style);
     text.anchor.set(0.5);
     sprite.addChild(text);
