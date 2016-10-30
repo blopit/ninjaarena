@@ -114,7 +114,7 @@ function onResize(e) {
 
 function onSocketConnected() {
   console.log("Connected to socket server");
-  socket.emit("new player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot()});
+  socket.emit("new player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot(), name: localPlayer.name});
 };
 
 function onSocketDisconnect() {
@@ -124,7 +124,7 @@ function onSocketDisconnect() {
 
 function onNewPlayer(data) {
   console.log("New player connected: "+data.id);
-  var newPlayer = new Player(game, data.x, data.y);
+  var newPlayer = new Player(game, data.x, data.y, data.name);
   newPlayer.id = data.id;
   newPlayers.push(newPlayer);
   remotePlayers.push(newPlayer);

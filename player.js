@@ -1,8 +1,9 @@
-var Player = function(startX, startY) {
+var Player = function(startX, startY, playerName) {
   var x = startX,
     y = startY,
     rot = 0,
-    id;
+    id,
+    name = playerName;
 
   var getX = function() {
     return x;
@@ -35,8 +36,9 @@ var Player = function(startX, startY) {
     setX: setX,
     setY: setY,
     setRot, setRot,
-    id: id
-  }
+    id: id,
+    name: name
+  };
 };
 
 exports.Player = Player;

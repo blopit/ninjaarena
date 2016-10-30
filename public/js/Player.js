@@ -216,6 +216,7 @@ var Player = function(room, startX, startY, playerName) {
     create: create,
     destroy: destroy,
     LMBclickDown: LMBclickDown,
-    removeHBox: removeHBox
+    removeHBox: removeHBox,
+    name: name
   }
 };
