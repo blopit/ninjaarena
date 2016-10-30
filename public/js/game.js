@@ -54,7 +54,7 @@ function initGame() {
 
 function preload() {
   game.load.image('background', 'assets/images/houseBackground.png');
-  game.load.spritesheet('dude', 'assets/images/dude.png', 32, 48);
+  game.load.spritesheet('dude', 'assets/images/dude_ninja.png', 75, 75);
   game.load.spritesheet('sword', 'assets/images/sword_anim.png', 101, 108);
 }
 
