@@ -7,30 +7,18 @@ var
   newPlayers,
   socket,
   cursors,
+  graphics,
   game;
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
 function init() {
   console.log("init");
-  // Declare the canvas and rendering context
-  //canvas = document.getElementById("gameCanvas");
-  //ctx = canvas.getContext("2d");
-
-  // Maximise the canvas
-  //canvas.width = window.innerWidth;
-  //canvas.height = window.innerHeight;
-
-  // Initialise keyboard controls
-  //keys = new Keys();
-
-  // Calculate a random start position for the local player
-  // The minus 5 (half a player size) stops the player being
-  // placed right on the egde of the screen
-
 
   // Initialise the local player
-  game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+  game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
+
+
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
 
@@ -52,28 +40,30 @@ function preload() {
 
 function create() {
   console.log('create');
+
   cursors = {
     'up': game.input.keyboard.addKey(Phaser.Keyboard.W),
-    'down': game.input.keyboard.addKey(Phaser.Keyboard.S),
     'left': game.input.keyboard.addKey(Phaser.Keyboard.A),
+    'down': game.input.keyboard.addKey(Phaser.Keyboard.S),
     'right': game.input.keyboard.addKey(Phaser.Keyboard.D)
   };
+  graphics = game.add.graphics(0, 0);
   game.input.mouse.capture = true;
-  console.log(localPlayer);
-  localPlayer.create();
 
-  game.input.mouse.mouseDownCallback = clickDown;
+  localPlayer.create();
 
 }
 
-function clickDown(evt) {
+/*function clickDown(evt) {
   if (game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
       console.log("lmb");
       localPlayer.LMBclickDown(evt);
   }
-}
+}*/
 
 function update() {
+  graphics.clear();
+
   //for rendering new players
   for (var i = 0; i < newPlayers.length; i++) {
     newPlayer = newPlayers[i];
@@ -81,7 +71,8 @@ function update() {
   }
   newPlayers = [];
 
-  if (localPlayer.update(cursors)) {
+
+  if (localPlayer.update(cursors, graphics)) {
     socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY(), rot: localPlayer.getRot()});
   };
 }

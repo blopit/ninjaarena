@@ -18,6 +18,8 @@ var Player = function(room, startX, startY) {
     swordOffsetY = 32,
     swordRotOffset = -70;
 
+    var hitboxes = [];
+
 
   var create = function() {
     sprite = game.add.sprite(x, y, 'dude');
@@ -30,7 +32,7 @@ var Player = function(room, startX, startY) {
   var destroy = function() {
     sprite.kill();
     sword.kill();
-  }
+  };
 
   var getRot = function() {
     if (sword) {
@@ -38,7 +40,7 @@ var Player = function(room, startX, startY) {
     } else {
       return 0;
     }
-  }
+  };
 
   var getX = function() {
     if (sprite) {
@@ -61,7 +63,7 @@ var Player = function(room, startX, startY) {
     if (sword) {
       sword.rotation = newRot;
     }
-  }
+  };
 
   var setX = function(newX) {
     x = newX;
@@ -81,42 +83,52 @@ var Player = function(room, startX, startY) {
 
   var resetActionTimer = function(evt) {
     action = true;
-  }
+  };
 
   var resetMoveTimer = function(evt) {
     canMove = true;
     sword.frame = 0;
-  }
+  };
 
   var swing = function() {
     sword.animations.play('swing');
-  }
+  };
 
   var stopAction = function(seconds) {
     action = false;
     game.time.events.add(Phaser.Timer.SECOND * seconds, resetActionTimer, this);
-  }
+  };
 
   var stopMove = function(seconds) {
     canMove = false;
     game.time.events.add(Phaser.Timer.SECOND * seconds, resetMoveTimer, this);
-  }
+  };
 
-  var LMBclickDown = function(evt) {
+  var LMBclickDown = function(player) {
     if (action) {
       swing();
+      hitboxes.push(new HitBoxSwing(player, game, sword.x, sword.y, swordRot));
       stopAction(swingTimer);
       stopMove(0.3);
     }
   };
 
-  var update = function(cursors) {
+  var removeHBox = function(hbox) {
+    hitboxes.splice(hitboxes.indexOf(hbox), 1);
+  }
+
+  var update = function(cursors, gfx) {
     var keypress = false;
     mx = game.input.mousePointer.x;
     my = game.input.mousePointer.y;
-    deltaRot =  sword.rotation;
+    deltaRot =  swordRot;
 
     swordRot = game.physics.arcade.angleToPointer(sprite) + swordRotOffset;
+
+
+    if (game.input.activePointer.isDown) {
+      LMBclickDown(this);
+    }
 
     if (canMove) {
       // Up key takes priority over down
@@ -142,6 +154,10 @@ var Player = function(room, startX, startY) {
     setY(y);
     setRot(swordRot);
 
+    for (var i = 0; i < hitboxes.length; i++) {
+      hitboxes[i].update(gfx);
+    }
+
     return keypress || (deltaRot != sword.rotation);
   };
 
@@ -155,6 +171,7 @@ var Player = function(room, startX, startY) {
     update: update,
     create: create,
     destroy: destroy,
-    LMBclickDown: LMBclickDown
+    LMBclickDown: LMBclickDown,
+    removeHBox: removeHBox
   }
 };
