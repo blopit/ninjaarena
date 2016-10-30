@@ -5,3 +5,35 @@ body {
 canvas {
 	display: block;
 }
+
+.game {
+	position: relative;
+	display: inline-block;
+
+	min-width: 800px;
+	min-height: 600px;
+}
+
+.name-form {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 420px;
+	display: none;
+}
+
+.name-form input {
+	padding: 8px;
+	font-size: 24px;
+	border: 1px solid black;
+}
+
+.name-form button {
+	padding: 8px;
+	font-size: 24px;
+	background-color: black;
+	color: white;
+	width: 96px;
+	border: none;
+}

@@ -26,8 +26,11 @@ var Player = function(room, startX, startY) {
     swordOffsetY = 32,
     swordRotOffset = -70;
 
-    var hitboxes = [];
+  var swordOffsetX = 20,
+  swordOffsetY = 40,
+  swordRotOffset = -60;
 
+  var hitboxes = [];
 
   var create = function() {
     sprite = game.add.sprite(x, y, 'dude');

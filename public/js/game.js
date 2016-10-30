@@ -8,21 +8,37 @@ var
   socket,
   cursors,
   graphics,
-  game;
+  game,
+  name;
+
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
 function init() {
+  var nameForm = document.getElementById('nameForm');
+  nameForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    name = nameForm.name.value;
+
+    if (name) {
+      nameForm.style.display = 'none';
+      initGame();
+    }
+  });
+  nameForm.style.display = 'block';
+}
+
+function initGame() {
   console.log("init");
 
   // Initialise the local player
-  game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
-
+  game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', { preload: preload, create: create, update: update });
 
   var startX = Math.round(Math.random()*(512)),
     startY = Math.round(Math.random()*(512));
 
   localPlayer = new Player(game, startX, startY);
+  localPlayer.name = name;
   remotePlayers = [];
   newPlayers = [];
 
@@ -31,7 +47,6 @@ function init() {
   // Start listening for events
   setEventHandlers();
 };
-
 
 function preload() {
   game.load.image("background", 'assets/images/houseBackground.png');

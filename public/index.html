@@ -9,9 +9,13 @@
 		<link rel="stylesheet" href="style/reset.css">
 		<link rel="stylesheet" href="style/game.css">
 	</head>
-
 	<body>
-		<!--<canvas id="gameCanvas"></canvas>-->
+		<div id="game" class="game">
+			<form id="nameForm" class="name-form" autocomplete="off">
+				<input type="text" name="name" placeholder="Name" />
+				<button type="submit">Play</button>
+			</form>
+		</div>
 		<script src="http://localhost:8000/socket.io/socket.io.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/2.6.2/phaser.min.js"></script>
 		<script src="js/requestAnimationFrame.js"></script>
