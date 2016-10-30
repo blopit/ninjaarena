@@ -23,8 +23,6 @@ var HitBoxSwing = function(c, room, startX, startY, rot) {
     life = 15,
     player = c;
 
-    console.log(bounds);
-
   var create = function() {
 
   };

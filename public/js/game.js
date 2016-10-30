@@ -62,7 +62,6 @@ function preload() {
 }
 
 function create() {
-  console.log('create');
   var background = game.add.sprite(0, 0, 'background');
   background.width = worldWidth;
   background.height = worldHeight;
@@ -105,7 +104,6 @@ function update() {
     var collided = SAT.testCirclePolygon(circle, polygon, response);
 
     if (collided) {
-      console.log("YEAAA");
       localPlayer.meleeHit(hitboxes[i].getRot()+(Math.PI/4), 20);
     }
 

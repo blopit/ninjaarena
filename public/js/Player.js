@@ -6,7 +6,7 @@ var C = SAT.Circle;
 var Player = function(c, room, startX, startY, playerName) {
   var x = startX,
     y = startY,
-    bounds = new C(new V(startX, startY), 32),
+    bounds = new C(new V(startX, startY), 37),
 
     hsp = 0,
     vsp = 0,
